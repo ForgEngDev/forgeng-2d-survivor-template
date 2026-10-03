@@ -1,0 +1,40 @@
+{
+  "name": "forgeng-2d-survivor-template",
+  "version": "1.0.0",
+  "description": "TypeScript/WebGPU 2D survivor-like starter for ForgEng (ForgeNG 3.4.2)",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://github.com/ForgEngDev/forgeng-2d-survivor-template",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ForgEngDev/forgeng-2d-survivor-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ForgEngDev/forgeng-2d-survivor-template/issues"
+  },
+  "keywords": [
+    "forgeng",
+    "forgeng-3",
+    "typescript",
+    "webgpu",
+    "vite",
+    "2d",
+    "survivor-like",
+    "arena-shooter",
+    "roguelite",
+    "game-engine",
+    "game-template",
+    "browser-game",
+    "wgsl",
+    "ecs"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}

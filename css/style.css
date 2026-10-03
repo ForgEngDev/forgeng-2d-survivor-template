@@ -1,0 +1,110 @@
+:root {
+  --ui-panel: rgba(7, 18, 28, 0.84);
+  --ui-border: rgba(75, 238, 186, 0.38);
+  --ui-text: #f1fff9;
+  --ui-muted: #9bc8bb;
+  --ui-accent: #49efb5;
+  --ui-gold: #ffd45f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #08121d; }
+#game { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+
+.template-survivor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  color: var(--ui-text);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.72);
+}
+
+.template-health,
+.template-run-stats,
+.template-progress {
+  position: absolute;
+  top: 22px;
+  padding: 8px 11px;
+  border: 1px solid var(--ui-border);
+  border-radius: 9px;
+  background: var(--ui-panel);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(5px);
+}
+
+.template-health { left: 22px; color: #ff6f7f; font-size: 13px; font-weight: 800; letter-spacing: .06em; }
+.template-run-stats { right: 372px; color: var(--ui-gold); font-size: 13px; font-weight: 800; letter-spacing: .06em; }
+.template-progress { left: 50%; width: min(300px, 34vw); transform: translateX(-50%); text-align: center; }
+.template-level { display: block; margin-bottom: 5px; color: var(--ui-text); font-size: 12px; letter-spacing: .12em; }
+.template-xp { height: 7px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, .12); }
+.template-xp i { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #35dca3, #9df55e); transition: width .16s ease-out; }
+
+.template-survivor-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  gap: 8px;
+  width: min(620px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid rgba(91, 245, 191, .52);
+  border-radius: 14px;
+  background: rgba(5, 15, 24, .94);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .52), inset 0 0 35px rgba(50, 220, 161, .06);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+.template-survivor-modal[hidden] { display: none; }
+.template-survivor-modal > strong { color: var(--ui-accent); font-size: clamp(24px, 4vw, 38px); letter-spacing: .12em; }
+.template-survivor-modal > span, .template-survivor-modal > em { color: var(--ui-muted); font-size: 14px; font-style: normal; }
+.template-upgrade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+.template-upgrade-grid button {
+  display: grid;
+  gap: 6px;
+  min-height: 88px;
+  padding: 13px 10px;
+  border: 1px solid rgba(91, 245, 191, .3);
+  border-radius: 10px;
+  background: rgba(19, 42, 49, .84);
+  color: var(--ui-text);
+  cursor: pointer;
+}
+.template-upgrade-grid button:hover, .template-upgrade-grid button:focus-visible { border-color: var(--ui-accent); background: rgba(28, 66, 67, .96); outline: none; transform: translateY(-1px); }
+.template-upgrade-grid b { color: var(--ui-gold); font-size: 13px; }
+.template-upgrade-grid small { color: var(--ui-muted); line-height: 1.35; }
+
+.template-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10001;
+  max-width: min(380px, calc(100vw - 48px));
+  padding: 12px 14px;
+  border: 1px solid rgba(132, 170, 220, .26);
+  border-left: 3px solid var(--ui-accent);
+  border-radius: 8px;
+  background: rgba(12, 27, 38, .94);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .35);
+  color: var(--ui-text);
+  font: 12px/1.45 system-ui, sans-serif;
+  pointer-events: none;
+}
+.template-toast strong { display: block; margin-bottom: 2px; font-weight: 700; }
+.template-toast span { color: var(--ui-muted); }
+
+@media (max-width: 700px) {
+  .template-health { top: 10px; left: 10px; }
+  .template-progress { top: 10px; width: 38vw; }
+  .template-run-stats { top: 10px; right: 10px; }
+  .template-upgrade-grid { grid-template-columns: 1fr; }
+  .template-upgrade-grid button { min-height: 58px; }
+  .template-toast { right: 12px; bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .template-xp i, .template-upgrade-grid button { transition: none; }
+}
