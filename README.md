@@ -2,7 +2,7 @@
 
 **Live demo:** [play.forgeng.dev/forgeng-2d-survivor-template/current/](https://play.forgeng.dev/forgeng-2d-survivor-template/current/)
 
-A beginner-friendly survivor-like arena game built with **ForgeNG 3.4.2**, TypeScript, WebGPU, and Vite. Move through an escalating swarm while your weapon automatically targets enemies, collect XP gems, and choose an upgrade every time you level up.
+A beginner-friendly survivor-like arena game built with **ForgeNG 3.4.2**, TypeScript, WebGPU, and Vite. Move through an escalating swarm while your weapon automatically targets enemies, earn XP from eliminations, and choose an upgrade every time you level up.
 
 ## Quick start
 
@@ -21,7 +21,7 @@ Open the local URL printed by Vite in a WebGPU-capable browser.
 - full-viewport 400×225 arena camera
 - WASD and arrow-key movement
 - automatic nearest-enemy targeting
-- fixed enemy, projectile, and XP-gem pools
+- fixed enemy and projectile pools
 - escalating enemy count, speed, and health
 - health, kills, survival timer, XP, and level progression
 - Power, Haste, and Speed level-up choices
@@ -48,7 +48,7 @@ src/
   main.ts
   scene/
     mainScene.ts       # run state, health, XP, levels, and restart
-    arena.ts           # pooled enemies, projectiles, gems, and collisions
+    arena.ts           # pooled enemies, projectiles, XP rewards, and collisions
     player.ts          # movement and upgradeable player stats
     controller.ts      # movement, upgrade, and restart input
     render.ts          # layer, camera, material, and sprites

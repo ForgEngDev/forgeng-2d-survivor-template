@@ -61,7 +61,7 @@ export class Hud {
       { id: "status", label: "Status", kind: "status", read: () => `${formatState(this.source?.getRunState() ?? "playing")} · ${this.fps} FPS` },
       ...ACTIVE_CONTROLS.map((control) => ({ id: `ctrl-${control.id}`, label: control.label, kind: "status" as const, read: () => control.help })),
       { id: "advanced", label: "Advanced metrics", kind: "boolean", read: () => this.advanced, write: (value: string | number | boolean | null) => { this.advanced = value === true; this.applyAdvanced(); this.syncUrl(); ui.settings.refresh("template.controls"); } },
-      { id: "tip", label: "Goal", kind: "status", read: () => "Survive, collect XP, and stack upgrades" },
+      { id: "tip", label: "Goal", kind: "status", read: () => "Survive, earn XP, and stack upgrades" },
     ] }));
     this.disposers.push(ui.contributions.register({ id: "template.controls.panel", title: "Controls", slot: "side-panel", order: 10, settingsSchemaId: "template.controls" }));
     this.disposers.push(ui.settings.register({ id: "template.metrics", title: "Metrics", fields: [

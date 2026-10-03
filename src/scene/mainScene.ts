@@ -9,7 +9,7 @@ import { createRenderDefinition } from "./render";
 
 export type RunState = "playing" | "level-up" | "game-over";
 
-/** Survivor loop: move, auto-attack, collect XP, choose upgrades, and outlast the swarm. */
+/** Survivor loop: move, auto-attack, earn XP, choose upgrades, and outlast the swarm. */
 export class MainScene {
   private readonly player = new Player();
   private readonly arena = new Arena();

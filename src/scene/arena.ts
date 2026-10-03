@@ -3,7 +3,6 @@ import { FALLBACK_TEXTURE, MATERIAL, WORLD } from "./ids";
 
 const ENEMY_COUNT = 48;
 const PROJECTILE_COUNT = 32;
-const GEM_COUNT = 40;
 const OFFSCREEN: readonly [number, number] = [-900, -900];
 
 interface EnemyState {
@@ -27,25 +26,16 @@ interface ProjectileState {
   revealTicks: number;
 }
 
-interface GemState {
-  readonly index: number;
-  x: number;
-  y: number;
-  active: boolean;
-  revealTicks: number;
-}
-
 export interface ArenaStep {
   readonly damage: number;
   readonly experience: number;
   readonly kills: number;
 }
 
-/** Pooled enemies, auto-aim projectiles, XP gems, and escalating spawn pressure. */
+/** Pooled enemies, auto-aim projectiles, direct XP rewards, and escalating spawn pressure. */
 export class Arena {
   private readonly enemies: EnemyState[] = [];
   private readonly projectiles: ProjectileState[] = [];
-  private readonly gems: GemState[] = [];
   private randomState = 0x51a71e2d;
   private ticks = 0;
   private spawnTimer = 0;
@@ -59,25 +49,12 @@ export class Arena {
     for (let index = 0; index < PROJECTILE_COUNT; index += 1) {
       this.projectiles.push({ index, x: OFFSCREEN[0], y: OFFSCREEN[1], vx: 0, vy: 0, damage: 1, ttl: 0, active: false, revealTicks: 0 });
     }
-    for (let index = 0; index < GEM_COUNT; index += 1) {
-      this.gems.push({ index, x: OFFSCREEN[0], y: OFFSCREEN[1], active: false, revealTicks: 0 });
-    }
     this.reset([0, 0]);
   }
 
   public createSprites() {
     return [
       ...createArenaBackground(),
-      ...this.gems.map((gem) => sprite2d({
-        id: `template.2d:gem-${gem.index}`,
-        entity: gemEntityId(gem.index),
-        layer: WORLD,
-        texture: FALLBACK_TEXTURE,
-        material: MATERIAL,
-        size: [6, 6],
-        tint: [0.35, 0.98, 0.52, 1],
-        transform: { position: OFFSCREEN, rotation: Math.PI / 4, scale: [0, 0] },
-      })),
       ...this.projectiles.map((projectile) => sprite2d({
         id: `template.2d:projectile-${projectile.index}`,
         entity: projectileEntityId(projectile.index),
@@ -163,32 +140,11 @@ export class Arena {
         enemy.hp -= projectile.damage;
         this.hideProjectile(projectile);
         if (enemy.hp <= 0) {
-          const gemPosition: readonly [number, number] = [enemy.x, enemy.y];
           this.hideEnemy(enemy);
-          this.dropGem(gemPosition);
           kills += 1;
+          experience += 1;
         }
         break;
-      }
-    }
-
-    for (const gem of this.gems) {
-      if (!gem.active) continue;
-      if (gem.revealTicks > 0) {
-        gem.revealTicks -= 1;
-        continue;
-      }
-      const dx = playerPosition[0] - gem.x;
-      const dy = playerPosition[1] - gem.y;
-      const distance = Math.hypot(dx, dy);
-      if (distance < 48 && distance > 0) {
-        const pull = distance < 24 ? 2.7 : 1.35;
-        gem.x += (dx / distance) * pull;
-        gem.y += (dy / distance) * pull;
-      }
-      if (distance < 9) {
-        this.hideGem(gem);
-        experience += 1;
       }
     }
 
@@ -208,10 +164,6 @@ export class Arena {
       const shown = projectile.active && projectile.revealTicks === 0;
       setTransform(projectileEntityId(projectile.index), { position: [projectile.x, projectile.y], rotation: Math.PI / 4, scale: shown ? [1, 1] : [0, 0] });
     }
-    for (const gem of this.gems) {
-      const shown = gem.active && gem.revealTicks === 0;
-      setTransform(gemEntityId(gem.index), { position: [gem.x, gem.y], rotation: Math.PI / 4, scale: shown ? [1, 1] : [0, 0] });
-    }
   }
 
   public reset(playerPosition: readonly [number, number]): void {
@@ -222,7 +174,6 @@ export class Arena {
     this.damageCooldown = 0;
     for (const enemy of this.enemies) this.hideEnemy(enemy);
     for (const projectile of this.projectiles) this.hideProjectile(projectile);
-    for (const gem of this.gems) this.hideGem(gem);
     for (let index = 0; index < 6; index += 1) this.prepareEnemy(playerPosition);
   }
 
@@ -261,15 +212,6 @@ export class Arena {
     projectile.revealTicks = 1;
   }
 
-  private dropGem(position: readonly [number, number]): void {
-    const gem = this.gems.find((candidate) => !candidate.active);
-    if (!gem) return;
-    gem.x = position[0];
-    gem.y = position[1];
-    gem.active = true;
-    gem.revealTicks = 1;
-  }
-
   private nearestEnemy(position: readonly [number, number]): EnemyState | null {
     let nearest: EnemyState | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
@@ -288,13 +230,11 @@ export class Arena {
   private activeEnemyCount(): number { return this.enemies.reduce((count, enemy) => count + (enemy.active || enemy.revealTicks > 0 ? 1 : 0), 0); }
   private hideEnemy(enemy: EnemyState): void { enemy.active = false; enemy.revealTicks = 0; }
   private hideProjectile(projectile: ProjectileState): void { projectile.active = false; projectile.revealTicks = 0; projectile.x = OFFSCREEN[0]; projectile.y = OFFSCREEN[1]; }
-  private hideGem(gem: GemState): void { gem.active = false; gem.revealTicks = 0; gem.x = OFFSCREEN[0]; gem.y = OFFSCREEN[1]; }
   private nextRandom(): number { this.randomState = (1664525 * this.randomState + 1013904223) >>> 0; return this.randomState / 0xffffffff; }
 }
 
 export function enemyEntityId(index: number): string { return `template.2d:enemy-${index}-entity`; }
 export function projectileEntityId(index: number): string { return `template.2d:projectile-${index}-entity`; }
-export function gemEntityId(index: number): string { return `template.2d:gem-${index}-entity`; }
 
 function squaredDistance(a: readonly [number, number], b: readonly [number, number]): number {
   const dx = a[0] - b[0];
